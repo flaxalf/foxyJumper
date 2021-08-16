@@ -1,2 +1,1 @@
-# foxyJumper
-Simple game developed in javascript
+Fox Jump
