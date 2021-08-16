@@ -26,7 +26,6 @@ var foxInitialPosition = {
     z: 0.5,
 };
 var platformID;
-var firstJumpVar = true;
 
 // Camera parameters
 const camera = {
@@ -282,7 +281,7 @@ const loader = {
             texture = texLoader.load( this.assets.textures.wall1, function ( texture ) {
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                 texture.offset.set( 0, 0 );
-                texture.repeat.set( 4, 700 );//700 per wall1, 600 per le altre
+                texture.repeat.set( 4, 700 );
                 texture.magFilter = THREE.LinearFilter;
                 texture.minFilter = THREE.NearestMipmapLinearFilter;
 
@@ -305,7 +304,7 @@ const loader = {
             texture = texLoader.load( this.assets.textures.wallLight, function ( texture ) {
                   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                   texture.offset.set( 0, 0 );
-                  texture.repeat.set( 5, 1500 );//700 per wall1, 600 per le altre
+                  texture.repeat.set( 5, 1500 );
                   texture.magFilter = THREE.LinearFilter;
                   texture.minFilter = THREE.NearestMipmapLinearFilter;
 
@@ -314,7 +313,6 @@ const loader = {
 
                   var wallMaterial = new THREE.MeshStandardMaterial({
                       map: texture,
-                      //normalMap: texLoader.load(loader.assets.textures.wallLightNormal),
                       roughnessMap: texLoader.load(loader.assets.textures.wallLightRoughness),
                   });
                   wall = new THREE.Mesh(geometry, wallMaterial, 0);
@@ -327,7 +325,7 @@ const loader = {
             texture = texLoader.load( this.assets.textures.wall, function ( texture ) {
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                 texture.offset.set( 0, 0 );
-                texture.repeat.set( 5, 1500 );//700 per wall1, 600 per le altre
+                texture.repeat.set( 5, 1500 );
                 texture.magFilter = THREE.LinearFilter;
                 texture.minFilter = THREE.NearestMipmapLinearFilter;
 
@@ -356,7 +354,6 @@ const loader = {
             texture.repeat.set( 9, 9 );
 
             const geometry = new THREE.PlaneGeometry( window.innerWidth / 2, window.innerHeight );
-
             var groundMaterial = new THREE.MeshStandardMaterial({
                 map: texture
             });
@@ -369,7 +366,7 @@ const loader = {
 
     loadPlatform: function(scene) {
         // Load platforms
-        //Option1: Mattoncini con erba
+        //Real platforms
         var texture = texLoader.load(loader.assets.textures.platform1);
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -380,10 +377,10 @@ const loader = {
             roughnessMap: texLoader.load(loader.assets.textures.platform1Roughness),
           },
             .8,
-            .3 
+            .3
         );
 
-        //Option2: wooden platforms
+        //superJump platform
         var texture = texLoader.load(loader.assets.textures.platformJump);
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -398,7 +395,7 @@ const loader = {
             .3
         );
 
-        //Option3: Crashable 
+        //Crashable
         var texture = texLoader.load(loader.assets.textures.platformCr);
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -422,7 +419,7 @@ const loader = {
     loadSounds: function(scene){
         jumpSound1 = new Audio(loader.assets.sounds.jumpSnd1);
         jumpSound1.volume = 0.5;
-        
+
         superJumpSound = new Audio(loader.assets.sounds.superJumpSnd);
         superJumpSound.volume = 0.5;
 
@@ -449,20 +446,18 @@ function drawPlatform(platformID) {
     platform.generate(camera.visible_width/4);
 
     var boxPlatform = PLATFORM.createBoxWithListener(platform);
-    
+
     platforms[platformID] = platform;
     boxPlatforms[platformID] = boxPlatform;
 }
 
 // Handle input events
 const inputControls = {
-    isMoving: 0,        // 0 not moving, 1 right, -1 left
     isRightFacing: true,
     keyboard:true,
 
     // Initializes the controls listeners
     init: function() {
-        this.isMoving = 0;
         this.isRightFacing = true;
         this.keyboard = true;
     },
@@ -475,7 +470,6 @@ const inputControls = {
                 FOX.rotateBody(fox, "left");
                 inputControls.isRightFacing = false;
             }
-            inputControls.isMoving = -1;
             FOX.moveLeft(fox);
         }
 
@@ -486,14 +480,12 @@ const inputControls = {
                 FOX.rotateBody(fox, "right");
                 inputControls.isRightFacing = true;
             }
-            inputControls.isMoving = 1;
             FOX.moveRight(fox);
          }
     },
 
     keyUp: function (e) {
         if (e.keyCode == '37' || e.keyCode == '39') {
-            inputControls.isMoving = 0;
             groupLeft.removeAll();
             groupRight.removeAll();
         }
@@ -625,7 +617,6 @@ function start() {
             groupRotating.removeAll();
 
             FOX.stopFallAnimation(fox);
-            inputControls.isMoving = 0;
             inputControls.keyboard = false;
 
             //Remove the scene at the end of the game
